@@ -1,0 +1,8 @@
+name: Hello World Agent (CLI)
+model: claude-opus-4-7
+system: |
+  You are a helpful assistant. Keep your answers concise.
+tools:
+  - type: agent_toolset_20260401
+    default_config:
+      enabled: true
