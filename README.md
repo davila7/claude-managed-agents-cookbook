@@ -8,6 +8,7 @@ Practical Jupyter notebooks for learning [Claude Managed Agents](https://docs.an
 |--------|------------------|
 | [`01-basics/`](01-basics/) | Core flow with the Python SDK: create environment → agent → session → stream events |
 | [`01-basics-cli/`](01-basics-cli/) | The same core flow with the `ant` CLI: version-controlled YAML + stream-first from the terminal |
+| [`02-multi-turn/`](02-multi-turn/) | Keep a session alive across turns; context preserved automatically |
 
 ## Setup
 
