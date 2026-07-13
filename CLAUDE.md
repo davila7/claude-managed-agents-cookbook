@@ -10,6 +10,8 @@ A cookbook of Jupyter notebooks for learning Claude Managed Agents. Each numbere
 
 - Folders are numbered (`01-basics/`, `02-multi-turn/`, etc.) and self-contained
 - Each folder has a `README.md` and one or more `.ipynb` notebooks
+- **Every topic ships in two flavors: SDK first, then CLI.** For topic `NN-x`, author the Python-SDK module `NN-x/` first, then a companion `NN-x-cli/` that teaches the *same* flow with the `ant` CLI (version-controlled `env.yaml` + `agent.yaml`, stream-first from the shell). The CLI README links back to the SDK one and mirrors its concepts.
+  - Precedent: `01-basics/` + `01-basics-cli/`, `02-multi-turn/` + `02-multi-turn-cli/`
 - A single `.env` at the **project root** is shared by all notebooks — never put `.env` inside a subfolder
 
 ## Environment setup

@@ -1,0 +1,9 @@
+name: Multi-Turn Agent (CLI)
+model: claude-opus-4-7
+system: |
+  You are a helpful assistant. Keep your answers concise and build on the
+  conversation so far.
+tools:
+  - type: agent_toolset_20260401
+    default_config:
+      enabled: true
