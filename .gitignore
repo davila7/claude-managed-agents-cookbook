@@ -14,3 +14,6 @@ venv/
 
 # Node
 node_modules/
+
+# Files the notebooks download from sessions
+*/outputs/
