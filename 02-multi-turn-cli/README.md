@@ -10,7 +10,7 @@ The same multi-turn flow as [`02-multi-turn/`](../02-multi-turn/), driven from t
 
 ## The pattern
 
-Agents and environments are static — define them as YAML and apply once with `!ant ... create`. The session is created **once** and reused; each turn repeats the stream-first dance. Streaming needs to read events live, so we drive `ant` from Python with `subprocess`:
+Agents and environments are static — declare them in `environment.yaml` / `agent.md` and reconcile with `ant apply` (re-runs are a no-op thanks to `claude-lock.json`). The session is created **once** and reused; each turn repeats the stream-first dance. Streaming needs to read events live, so we drive `ant` from Python with `subprocess`:
 
 ```python
 # One session, created once and kept in session_id
@@ -20,17 +20,17 @@ session_id = _session[0]
 def chat(message):
     # Open the event stream FIRST (stream-before-send), then send, then read until idle.
     stream = subprocess.Popen(["ant", "beta:sessions:events", "stream",
-        "--session-id", session_id, "--format", "yaml"], stdout=subprocess.PIPE, text=True, bufsize=1)
+        "--session-id", session_id, "--format", "json"], stdout=subprocess.PIPE, text=True, bufsize=1)
     subprocess.run(["ant", "beta:sessions:events", "send", "--session-id", session_id],
         input=json.dumps({"events": [{"type": "user.message",
             "content": [{"type": "text", "text": message}]}]}), text=True, check=True)
-    # ...read agent.message text until session.status_idle...
+    # ...json.loads each event; print agent.message text until session.status_idle...
 
 chat("What's the largest planet in our solar system?")
 chat("How many moons does it have?")     # context preserved automatically
 ```
 
-> **Why Python, not `%%bash`?** ant's `{name}<` process-substitution needs bash ≥ 4.1, but macOS ships bash 3.2; and `--format jsonl` buffers until the stream ends. Reading `--format yaml` from Python `subprocess` is portable and parses each event robustly.
+> **Why Python, not `%%bash`?** ant's `{name}<` process-substitution needs bash ≥ 4.1, but macOS ships bash 3.2; and `--format jsonl` buffers until the stream ends when piped. Reading `--format json` from Python `subprocess` is portable, delivers each event as it arrives, and `json.loads` parses it into the same shape the SDK yields.
 
 ## Session status reference
 
@@ -42,11 +42,12 @@ chat("How many moons does it have?")     # context preserved automatically
 ## Files
 
 - `multi_turn_cli.ipynb` — step-by-step notebook running `ant` commands cell by cell
-- `env.yaml` / `agent.yaml` — written by the notebook; the version-controlled resource definitions
+- `environment.yaml` / `agent.md` — written by the notebook; the version-controlled resource definitions
+- `claude-lock.json` — written by `ant apply`; gitignored in this repo
 
 ## Setup
 
-Requires the `ant` CLI installed and authenticated — see [`01-basics-cli/`](../01-basics-cli/#setup) for install and auth details. The setup cell loads `ANTHROPIC_API_KEY` from the shared root `.env` and clears Jupyter's `FORCE_COLOR` (which would otherwise make `ant` emit ANSI color codes into its JSON/YAML and break parsing):
+Requires the `ant` CLI (>= 1.40) installed and authenticated — see [`01-basics-cli/`](../01-basics-cli/#setup) for install and auth details. The setup cell loads `ANTHROPIC_API_KEY` from the shared root `.env` and clears Jupyter's `FORCE_COLOR` (which would otherwise make `ant` emit ANSI color codes into its JSON/YAML and break parsing):
 
 ```bash
 cp ../.env.example ../.env
