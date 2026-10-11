@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=https://platform.claude.com/schemas/ant/beta/environment.json
+name: session-control-env-cli
+config:
+  type: cloud
+  networking:
+    type: unrestricted

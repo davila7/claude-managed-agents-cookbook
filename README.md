@@ -14,6 +14,8 @@ Practical Jupyter notebooks for learning [Claude Managed Agents](https://platfor
 | [`03-tools-and-permissions-cli/`](03-tools-and-permissions-cli/) | The same with `ant`: tool config in `agent.md` frontmatter, updates through `ant apply` |
 | [`04-files/`](04-files/) | Upload and mount files into the sandbox, add files mid-session, download the agent's outputs |
 | [`04-files-cli/`](04-files-cli/) | The same with `ant files` and `ant beta:sessions:resources` |
+| [`05-session-control/`](05-session-control/) | Budgets and usage, `system.message`, interrupt + redirect, reconnect without missing events, resume at the cap |
+| [`05-session-control-cli/`](05-session-control-cli/) | The same with `ant beta:sessions update / retrieve / archive` and `ant ... events list` |
 
 ### Roadmap
 
@@ -21,7 +23,6 @@ Each topic ships as an SDK module and a `-cli` companion. The path leads up to d
 
 | Module | What it adds |
 |--------|--------------|
-| `05-session-control` | Steer and interrupt, reconnect and list past events, session budgets and usage |
 | `06-subagents` | The `multiagent` block: delegate to other agents in session threads |
 | `07-dynamic-workflows` | The agent writes a workflow that runs many agents in phases; follow the run on the stream |
 
