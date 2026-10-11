@@ -7,12 +7,12 @@ The same minimal end-to-end example as [`01-basics/`](../01-basics/), driven fro
 A complete agent flow from scratch:
 
 ```
-ant beta:environments create < env.yaml   →  store the environment id
-ant beta:agents create < agent.yaml        →  store agent id + version
-ant beta:sessions create --agent ...        →  new session per run
-ant beta:sessions:events stream             →  open stream FIRST
-ant beta:sessions:events send               →  send message, triggers agent loop
-read loop                                   →  handle responses until idle
+ant apply environment.yaml        →  environment id recorded in claude-lock.json
+ant apply agent.md                →  agent id + version recorded in claude-lock.json
+ant beta:sessions create --agent  →  new session per run
+ant beta:sessions:events stream   →  open stream FIRST
+ant beta:sessions:events send     →  send message, triggers agent loop
+read loop                         →  handle responses until idle
 ```
 
 ## CLI for the control plane, SDK for the data plane
@@ -21,9 +21,32 @@ read loop                                   →  handle responses until idle
 |---|---|---|
 | Resources | agents, environments | sessions, events |
 | Cadence | Once per deploy / ad-hoc | Every task / every turn |
-| Lives in | `*.yaml` in your repo + CI | Application code |
+| Lives in | `agent.md` / `environment.yaml` in your repo + CI | Application code |
 
-Agents and environments are relatively static — define them as YAML, check them into your repo, apply with `ant beta:agents create|update`. Sessions are dynamic — created per run and streamed.
+Agents and environments are relatively static — declare them in files, check them into your repo, and reconcile with `ant apply`. Sessions are dynamic — created per run and streamed.
+
+## `ant apply` and the lockfile
+
+`ant apply` compares your files with the API, shows a plan, and creates or updates resources to match. It records each resource's id (and the agent's version) in `claude-lock.json`, so running it again is a no-op — *create once, reuse the ID* enforced by the tool:
+
+```bash
+ant apply environment.yaml agent.md --yes --lock-file claude-lock.json
+```
+
+The agent file is Markdown with YAML frontmatter; the body is the system prompt:
+
+```markdown
+---
+name: Hello World Agent (CLI)
+model: claude-opus-5-5
+tools:
+  - type: agent_toolset_20260401
+---
+
+You are a helpful assistant. Keep your answers concise.
+```
+
+> In your own project, **commit `claude-lock.json`** so the next apply updates the same resources. This cookbook gitignores it because it holds your organization and workspace ids — every reader gets their own.
 
 ## Core concepts
 
@@ -54,11 +77,12 @@ YAML
 ## Files
 
 - `hello_world_cli.ipynb` — step-by-step notebook running `ant` commands cell by cell
-- `env.yaml` / `agent.yaml` — written by the notebook; the version-controlled resource definitions
+- `environment.yaml` / `agent.md` — written by the notebook; the version-controlled resource definitions
+- `claude-lock.json` — written by `ant apply`; gitignored here (see above)
 
 ## Setup
 
-**1. Install the CLI** (pick one):
+**1. Install the CLI** — version 1.40 or later, for `ant apply` (pick one):
 
 ```bash
 brew install anthropics/tap/ant                          # macOS
@@ -79,8 +103,9 @@ Or run `ant auth login` once to store an OAuth profile. `ant auth status` shows 
 ## Useful commands
 
 ```bash
+ant apply agent.md environment.yaml --dry-run          # show the plan, change nothing
 ant beta:agents list --transform '{id,name,model}' --format jsonl
+ant beta:agents:versions list --agent-id "$AGENT_ID"   # version history
 ant beta:sessions:events list --session-id "$SID" --transform 'content.0.text' -r
-ant beta:agents update --agent-id "$AGENT_ID" --version N < agent.yaml   # bump version
-ant --help                                                              # explore
+ant --help                                             # explore
 ```

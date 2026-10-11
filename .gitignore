@@ -1,5 +1,8 @@
 .env
 
+# ant apply lockfile — holds your org/workspace ids; each reader gets their own
+claude-lock.json
+
 # Python
 __pycache__/
 *.pyc

@@ -10,7 +10,7 @@ A cookbook of Jupyter notebooks for learning Claude Managed Agents. Each numbere
 
 - Folders are numbered (`01-basics/`, `02-multi-turn/`, etc.) and self-contained
 - Each folder has a `README.md` and one or more `.ipynb` notebooks
-- **Every topic ships in two flavors: SDK first, then CLI.** For topic `NN-x`, author the Python-SDK module `NN-x/` first, then a companion `NN-x-cli/` that teaches the *same* flow with the `ant` CLI (version-controlled `env.yaml` + `agent.yaml`, stream-first from the shell). The CLI README links back to the SDK one and mirrors its concepts.
+- **Every topic ships in two flavors: SDK first, then CLI.** For topic `NN-x`, author the Python-SDK module `NN-x/` first, then a companion `NN-x-cli/` that teaches the *same* flow with the `ant` CLI (version-controlled `environment.yaml` + `agent.md` reconciled with `ant apply --yes --lock-file claude-lock.json`, stream-first from the shell). The CLI README links back to the SDK one and mirrors its concepts.
   - Precedent: `01-basics/` + `01-basics-cli/`, `02-multi-turn/` + `02-multi-turn-cli/`
 - A single `.env` at the **project root** is shared by all notebooks — never put `.env` inside a subfolder
 
@@ -18,7 +18,8 @@ A cookbook of Jupyter notebooks for learning Claude Managed Agents. Each numbere
 
 ```bash
 cp .env.example .env   # then add ANTHROPIC_API_KEY
-pip install anthropic python-dotenv jupyter
+pip install "anthropic>=1.13" python-dotenv jupyter
+brew install anthropics/tap/ant   # CLI notebooks need ant >= 1.40 (`ant apply`)
 ```
 
 Notebooks install their own deps in the first cell via `%pip install -q ...`.
@@ -28,7 +29,8 @@ Notebooks install their own deps in the first cell via `%pip install -q ...`.
 - **stream-first**: always open `client.beta.sessions.events.stream(session_id)` before calling `events.send()` — missing events otherwise
 - **create once, reuse IDs**: `environments.create()` and `agents.create()` are setup steps, not per-run steps; production code would persist these IDs
 - **version pinning**: sessions reference `agent.id` + `agent.version` explicitly
-- **termination check**: event loops break on both `session.status_idle` and `session.status_terminated`
+- **termination check**: event loops break on `session.status_terminated`, and on `session.status_idle` only when its `stop_reason` says the turn is over (`end_turn`); `requires_action` means the client must answer (tool result / confirmation) and keep reading
+- **lockfile stays local**: `claude-lock.json` holds org/workspace ids and is gitignored; CLI notebooks read resource ids from it
 - **dotenv**: notebooks load `.env` via `find_dotenv()` so the root file is found regardless of notebook location
 
 ## Adding a new section
@@ -42,6 +44,8 @@ Notebooks install their own deps in the first cell via `%pip install -q ...`.
 ## SDK and model defaults
 
 - SDK: `anthropic` Python package (`client.beta.agents`, `client.beta.environments`, `client.beta.sessions`)
-- Default model: `claude-opus-4-7`
-- Thinking: `thinking: {"type": "adaptive"}` for complex tasks
+- SDK version: `anthropic>=1.13` (needed for `multiagent_20261001`, workflow-run events, session budgets)
+- Default model: `claude-opus-5-5`
+- Effort: set via the object form of `model`, e.g. `{"id": "claude-opus-5-5", "effort": "high"}`
+- Docs: https://platform.claude.com/docs/en/managed-agents/overview
 - Beta header is set automatically by the SDK for all `client.beta.*` calls
