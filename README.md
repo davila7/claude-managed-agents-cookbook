@@ -7,9 +7,11 @@ Practical Jupyter notebooks for learning [Claude Managed Agents](https://platfor
 | Folder | What you'll learn |
 |--------|------------------|
 | [`01-basics/`](01-basics/) | Core flow with the Python SDK: create environment → agent → session → stream events |
-| [`01-basics-cli/`](01-basics-cli/) | The same core flow with the `ant` CLI: version-controlled YAML + stream-first from the terminal |
+| [`01-basics-cli/`](01-basics-cli/) | The same core flow with the `ant` CLI: version-controlled files + `ant apply`, stream-first from the terminal |
 | [`02-multi-turn/`](02-multi-turn/) | Keep a session alive across turns with the Python SDK; context preserved automatically |
 | [`02-multi-turn-cli/`](02-multi-turn-cli/) | The same multi-turn flow with the `ant` CLI: one reused session + a `chat()` helper |
+| [`03-tools-and-permissions/`](03-tools-and-permissions/) | Custom tools and permission policies: answer the agent mid-turn, read `stop_reason` |
+| [`03-tools-and-permissions-cli/`](03-tools-and-permissions-cli/) | The same with `ant`: tool config in `agent.md` frontmatter, updates through `ant apply` |
 
 ### Roadmap
 
@@ -17,7 +19,6 @@ Each topic ships as an SDK module and a `-cli` companion. The path leads up to d
 
 | Module | What it adds |
 |--------|--------------|
-| `03-tools-and-permissions` | Custom tools and permission policies — answering the agent mid-turn (`requires_action`) |
 | `04-files` | Mount files into the sandbox and download what the agent produces |
 | `05-session-control` | Steer and interrupt, reconnect and list past events, session budgets and usage |
 | `06-subagents` | The `multiagent` block: delegate to other agents in session threads |
