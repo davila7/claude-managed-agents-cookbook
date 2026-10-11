@@ -2,6 +2,8 @@
 
 Practical Jupyter notebooks for learning [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview) — from a minimal hello-world up to dynamic workflows, where the agent writes a program that runs many agents in parallel.
 
+> The notebooks call the real API, so running them costs money. Modules 01–05 cost cents each; 06 and 07 run several agents, and each session sets a budget ($3 and $5) as a hard cap.
+
 ## Structure
 
 | Folder | What you'll learn |
@@ -16,15 +18,18 @@ Practical Jupyter notebooks for learning [Claude Managed Agents](https://platfor
 | [`04-files-cli/`](04-files-cli/) | The same with `ant files` and `ant beta:sessions:resources` |
 | [`05-session-control/`](05-session-control/) | Budgets and usage, `system.message`, interrupt + redirect, reconnect without missing events, resume at the cap |
 | [`05-session-control-cli/`](05-session-control-cli/) | The same with `ant beta:sessions update / retrieve / archive` and `ant ... events list` |
+| [`06-subagents/`](06-subagents/) | The `multiagent` block: a lead delegates to specialist subagents, each in its own session thread |
+| [`06-subagents-cli/`](06-subagents-cli/) | The same with `ant`: subagents referenced by file path, `ant beta:sessions:threads` |
+| [`07-dynamic-workflows/`](07-dynamic-workflows/) | The agent writes a workflow that runs many agents in phases; follow the run to the end |
+| [`07-dynamic-workflows-cli/`](07-dynamic-workflows-cli/) | The same with `ant`: workflows enabled in `agent.md`, the run followed from the shell |
 
-### Roadmap
+### Learning path
 
-Each topic ships as an SDK module and a `-cli` companion. The path leads up to dynamic workflows, introducing one prerequisite at a time:
+Each topic ships as an SDK module and a `-cli` companion. The modules build on each other, up to dynamic workflows:
 
-| Module | What it adds |
-|--------|--------------|
-| `06-subagents` | The `multiagent` block: delegate to other agents in session threads |
-| `07-dynamic-workflows` | The agent writes a workflow that runs many agents in phases; follow the run on the stream |
+```
+01 basics → 02 multi-turn → 03 tools & permissions → 04 files → 05 session control → 06 subagents → 07 dynamic workflows
+```
 
 Shared fictitious data used by several modules lives in [`sample-data/`](sample-data/).
 

@@ -11,7 +11,9 @@ A cookbook of Jupyter notebooks for learning Claude Managed Agents. Each numbere
 - Folders are numbered (`01-basics/`, `02-multi-turn/`, etc.) and self-contained
 - Each folder has a `README.md` and one or more `.ipynb` notebooks
 - **Every topic ships in two flavors: SDK first, then CLI.** For topic `NN-x`, author the Python-SDK module `NN-x/` first, then a companion `NN-x-cli/` that teaches the *same* flow with the `ant` CLI (version-controlled `environment.yaml` + `agent.md` reconciled with `ant apply --yes --lock-file claude-lock.json`, stream-first from the shell). The CLI README links back to the SDK one and mirrors its concepts.
-  - Precedent: `01-basics/` + `01-basics-cli/`, `02-multi-turn/` + `02-multi-turn-cli/`
+  - Precedent: every module from `01-basics/` + `01-basics-cli/` through `07-dynamic-workflows/` + `07-dynamic-workflows-cli/`
+  - CLI notebooks run `ant` through `subprocess` for streaming (`--format json`, parsed per top-level `}`; `jsonl` buffers when piped) and set `TERM=dumb` in the setup cell
+- Shared fictitious datasets live in `sample-data/` (e.g. `sample-data/contracts/`, used by modules 04, 06, 07)
 - A single `.env` at the **project root** is shared by all notebooks — never put `.env` inside a subfolder
 
 ## Environment setup
