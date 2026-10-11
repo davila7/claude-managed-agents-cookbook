@@ -33,6 +33,8 @@ Each topic ships as an SDK module and a `-cli` companion. The modules build on e
 
 Shared fictitious data used by several modules lives in [`sample-data/`](sample-data/).
 
+**Step-by-step guide (PDF):** [English](docs/Claude-Managed-Agents-Guide-EN.pdf) · [Español](docs/Claude-Managed-Agents-Guia-ES.pdf). It covers what Managed Agents is, VS Code setup, and what to watch on platform.claude.com while you run each module.
+
 ## Setup
 
 **1. Clone and configure your API key**
@@ -42,11 +44,15 @@ cp .env.example .env
 # edit .env and set ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-**2. Install dependencies**
+**2. Create a virtual environment and install dependencies**
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -U "anthropic>=1.13" python-dotenv jupyter
 ```
+
+In VS Code, pick `.venv` as the notebook kernel (**Select Kernel → Python Environments → .venv**).
 
 > Each notebook also runs `%pip install -U anthropic python-dotenv` in its first cell, so the SDK stays up to date when you execute it.
 
@@ -63,9 +69,9 @@ jupyter lab
 
 ## Prerequisites
 
-- Python 3.9+
+- Python 3.10+ (the notebooks use `match` statements)
 - Jupyter (JupyterLab, VS Code, or similar)
-- An [Anthropic API key](https://console.anthropic.com/) with Managed Agents access
+- A [Claude API key](https://platform.claude.com/settings/keys) (Managed Agents is enabled by default for API accounts)
 
 ## Core concepts
 
